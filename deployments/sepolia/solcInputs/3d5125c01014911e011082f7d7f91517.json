@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/taskManager.sol": {
+      "content": "//SPDX-License-Identifier:MIT\npragma solidity ^0.8.8;\n\ncontract taskManager{\n    enum TaskStatus {Pending,Completed}\n    struct Task{\n        uint id;\n        string title;\n        string description;\n        TaskStatus status;\n        address owner;\n    }\n    uint private taskCounter;\n    mapping(uint=>Task) private tasks;\n\n    event TaskCreated(uint taskId,string title,string description,address owner);\n    event TaskUpdated(uint taskId,string title,string description,TaskStatus status);\n    event TaskDeleted(uint taskId);\n\n    modifier onlyTaskOwner(uint _taskId){\n        require(tasks[_taskId].owner==msg.sender,\"Not Task Owner\");\n        _;\n    }\n    function addTask(string memory _title,\n    string memory _description\n    )external{\n        taskCounter++;\n        tasks[taskCounter]=Task(taskCounter,\n        _title,\n        _description,\n        TaskStatus.Pending,\n        msg.sender);\n    }\n    function markTaskCompleted(uint _taskId) external onlyTaskOwner(_taskId){\n        tasks[_taskId].status=TaskStatus.Completed;\n\n        emit TaskUpdated(_taskId,\n        tasks[_taskId].title,\n        tasks[_taskId].description,\n        TaskStatus.Completed\n        );\n    }\n    function editTask(uint _taskId,string memory _title, string memory _description) external onlyTaskOwner(_taskId){\n        Task storage task= tasks[_taskId];\n        task.title=_title;\n        task.description=_description;\n        emit TaskUpdated(\n            _taskId,\n            _title,\n            _description,\n            task.status\n        );\n\n    }\n    function deleteTask(uint _taskId) external onlyTaskOwner(_taskId){\n        delete tasks[_taskId];\n        emit TaskDeleted(_taskId);\n    }\n    \n    function getTask() external  view  returns(Task[] memory){\n        uint count=0;\n\n        for(uint i=1;i<=taskCounter;i++){\n            if(tasks[i].owner==msg.sender){\n                count++;\n            }\n        }\n        Task[] memory finalTasks= new Task[](count);\n        uint index=0;\n\n        for(uint i=1;i<=taskCounter;i++){\n            if(tasks[i].owner==msg.sender){\n                finalTasks[index]=tasks[i];\n                index++;\n            }\n        }\n        return finalTasks;\n\n        \n    }\n    function getTaskCounter() external view returns (uint){\n        return taskCounter;\n    }\n\n}"
+    }
+  },
+  "settings": {
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
