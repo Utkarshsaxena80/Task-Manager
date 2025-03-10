@@ -29,7 +29,7 @@ The contract is deployed using Hardhat with the following deployment script:
 
 1. Clone the repository:
    ```sh
-   git clone <repo-url>
+   git clone <https://github.com/Utkarshsaxena80/Task-Manager>
    cd task-manager
    ```
 2. Install dependencies:
@@ -43,7 +43,7 @@ The contract is deployed using Hardhat with the following deployment script:
 4. Deploy the contract to a local Hardhat network:
    ```sh
    npx hardhat node
-   npx hardhat run --network localhost scripts/deploy.js
+   npx hardhat deploy --network localhost/sepolia
    ```
 
 ## Usage
